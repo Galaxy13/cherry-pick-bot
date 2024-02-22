@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 
 public class Notification {
-    String requestURL;
-    String commentURL;
+    private String requestURL;
+    private String commentURL;
 
     @JsonProperty("subject")
     private void unpackNested(Map<String, Object> subject) {
@@ -14,4 +14,11 @@ public class Notification {
         this.commentURL = (String) subject.get("latest_comment_url");
     }
 
+    public String getCommentURL() {
+        return commentURL;
+    }
+
+    public String getRequestURL() {
+        return requestURL;
+    }
 }
