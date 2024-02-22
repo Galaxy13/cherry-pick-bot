@@ -5,7 +5,7 @@
 #  https://api.github.com/notifications
 GET https://api.github.com/notifications
 Accept: application/vnd.github+json
-Authorization: Bearer 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
+Authorization: Bearer
 X-Github-Api-Version: 2022-11-28
 all: true
 
@@ -17,14 +17,14 @@ all: true
 ###
 GET https://api.github.com/repos/Overflow922/front-tutor/issues/comments/1953026254
 Accept: application/vnd.github+json
-Authorization: Bearer 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
+Authorization: Bearer
 X-GitHub-Api-Version: 2022-11-28
 
 ###
 
 GET https://api.github.com/repos/Overflow922/front-tutor/pulls/131
 Accept: application/vnd.github+json
-Authorization: Bearer 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
+Authorization: Bearer
 X-GitHub-Api-Version: 2022-11-28
 
 
