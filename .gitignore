@@ -36,6 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 
-### Secret ###
-application.txt
-httptest.http
+### Secret ####
