@@ -10,4 +10,8 @@ class CherryPickBotApplicationTests {
     void contextLoads() {
     }
 
+    @Test
+    void clientTest(){
+
+    }
 }
