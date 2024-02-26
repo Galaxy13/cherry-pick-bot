@@ -10,9 +10,10 @@ import java.util.Optional;
 @Getter
 public class PullRequest {
     private String label;
+    private String[] commits;
 
     @JsonProperty("head")
-    private void unpackNested(Map<String, Object> head) throws JsonParseException {
+    private void unpackNestedHead(Map<String, Object> head) throws JsonParseException {
         Optional<String> labelOptional = Optional.ofNullable(head.get("label").toString());
         if (labelOptional.isPresent()){
             this.label = labelOptional.get();

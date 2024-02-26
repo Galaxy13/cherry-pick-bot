@@ -2,6 +2,7 @@ package com.galaxy13.cherrypickbot.components;
 
 import com.galaxy13.cherrypickbot.configs.RestBotClientProperties;
 import com.galaxy13.cherrypickbot.dto.Comment;
+import com.galaxy13.cherrypickbot.dto.Commit;
 import com.galaxy13.cherrypickbot.dto.Notification;
 import com.galaxy13.cherrypickbot.dto.PullRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,22 @@ public class Client {
                 .uri(this.notifications[0].getCommentURL())
                 .retrieve()
                 .body(Comment.class);
+    }
+
+    public Commit[] getRequestCommits() throws Exception {
+        this.getNotifications("all");
+        if (this.notifications.length == 0) {
+            throw new Exception("No information in Notifications");
+        }
+        String requestURL = notifications[0].getRequestURL();
+        if (requestURL.isEmpty()) {
+            throw new Exception("No pull request information");
+        }
+        return this.restClient
+                .get()
+                .uri(requestURL + "/commits")
+                .retrieve()
+                .body(Commit[].class);
     }
 
 }
