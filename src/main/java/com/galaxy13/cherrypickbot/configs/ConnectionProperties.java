@@ -9,7 +9,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "github")
 @Getter
 @Setter
-public class RestBotClientProperties {
+public class ConnectionProperties {
 
     private Map<String, String> headers;
     private String base_url;

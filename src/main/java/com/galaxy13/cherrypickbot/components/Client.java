@@ -1,6 +1,6 @@
 package com.galaxy13.cherrypickbot.components;
 
-import com.galaxy13.cherrypickbot.configs.RestBotClientProperties;
+import com.galaxy13.cherrypickbot.configs.ConnectionProperties;
 import com.galaxy13.cherrypickbot.dto.Comment;
 import com.galaxy13.cherrypickbot.dto.Commit;
 import com.galaxy13.cherrypickbot.dto.Notification;
@@ -18,7 +18,7 @@ public class Client {
     private Notification[] notifications;
 
     @Autowired
-    public Client(RestBotClientProperties properties){
+    public Client(ConnectionProperties properties){
         RestClient.Builder restBuilder = RestClient.builder().requestFactory(new HttpComponentsClientHttpRequestFactory())
                 .baseUrl(properties.getBase_url());
         try{
