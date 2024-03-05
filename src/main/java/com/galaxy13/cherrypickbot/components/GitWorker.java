@@ -67,8 +67,32 @@ public class GitWorker {
         }
     }
 
-    private void gitPush(Path directory, String remoteBranch) {
+    private void gitCommit(Path directory, String branch) throws IOException {
+        gitCheckout(directory, branch);
+        runCommand(directory, "git", "commit");
+    }
 
+    private void printReader(BufferedReader reader) throws IOException {
+        while (true) {
+            String line = reader.readLine();
+            if (line == null) {
+                break;
+            }
+            System.out.println(line);
+        }
+    }
+
+    private void gitPush(Path directory, String remoteBranch) throws IOException {
+        gitCheckout(directory, remoteBranch);
+        if (!gitStatus(directory, remoteBranch)) {
+            throw new IOException("Status check error");
+        }
+        try {
+            BufferedReader reader = runCommand(directory, "git", "push");
+            printReader(reader);
+        } catch (IOException e) {
+            throw new IOException("Push branch to origin error");
+        }
     }
 
     private void cherryPickCommits(Commit[] commits, String fromBranch, String[] toBranches) {
@@ -85,17 +109,13 @@ public class GitWorker {
             }
             try {
                 BufferedReader bufferedReader = runCommand(directory, "git", "merge", fromBranch);
-                while (true) {
-                    String line = bufferedReader.readLine();
-                    if (line == null) {
-                        break;
-                    }
-                    System.out.println(line);
-                }
+                printReader(bufferedReader);
                 System.out.printf("Branch %s merged with %s%n", fromBranch, branch);
             } catch (IOException e) {
                 throw new Exception(String.format("Merge from %s to %s error", fromBranch, branch));
             }
+//            gitCommit(directory, branch);
+            gitPush(directory, branch);
         }
     }
 }
