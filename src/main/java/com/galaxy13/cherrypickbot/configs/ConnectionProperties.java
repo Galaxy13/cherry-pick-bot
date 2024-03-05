@@ -12,6 +12,8 @@ import java.util.Map;
 public class ConnectionProperties {
 
     private Map<String, String> headers;
-    private String base_url;
+    private String base_url_api;
     private Map<String, String> notification;
+    private String base_url_git;
+    private Map<String, String> bot;
 }

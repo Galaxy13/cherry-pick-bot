@@ -20,7 +20,7 @@ public class Client {
     @Autowired
     public Client(ConnectionProperties properties){
         RestClient.Builder restBuilder = RestClient.builder().requestFactory(new HttpComponentsClientHttpRequestFactory())
-                .baseUrl(properties.getBase_url());
+                .baseUrl(properties.getBase_url_api());
         try{
             for (Map.Entry<String, String> entry: properties.getHeaders().entrySet()){
                 restBuilder = restBuilder.defaultHeader(entry.getKey(), entry.getValue());
