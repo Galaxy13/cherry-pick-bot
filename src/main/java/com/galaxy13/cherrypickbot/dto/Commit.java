@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 public class Commit {
     @JsonProperty("sha")
-    private String commit;
+    private String commitSHA;
 }

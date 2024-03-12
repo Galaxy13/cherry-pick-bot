@@ -4,7 +4,6 @@ import com.galaxy13.cherrypickbot.configs.ConnectionProperties;
 import com.galaxy13.cherrypickbot.dto.Commit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.reader.StreamReader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,17 +37,21 @@ public class GitWorker {
         return new BufferedReader(new InputStreamReader(process.getInputStream()));
     }
 
-    private void cloneRepository(String repository) throws Exception{
-        Path directory = Path.of("C:\\cherry-pick-bot\\Galaxy13");
+    private void cloneRepository(String repository, Path directory, String userName) throws Exception {
         if (!Files.exists(directory)) {
             Files.createDirectories(directory);
         }
-        runCommand(directory, "git",
-                "clone",
-                String.format("https://%s:%s@%s/Galaxy13/%s", botName, token, originUrl, repository));
+        try {
+            BufferedReader reader = runCommand(directory, "git",
+                    "clone",
+                    String.format("https://oauth2:%s@%s/%s/%s", token, originUrl, userName, repository), ".");
+            printReader(reader);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    private boolean gitStatus(Path directory, String branch) throws IOException {
+    private boolean gitStatus(Path directory, String branch) {
         try {
             BufferedReader reader = runCommand(directory,
                     "git", "status");
@@ -95,13 +98,39 @@ public class GitWorker {
         }
     }
 
-    private void cherryPickCommits(Commit[] commits, String fromBranch, String[] toBranches) {
-
+    public void cherryPickCommits(Commit[] commits, String fromBranch, String[] toBranches, String userName, String repository) throws Exception {
+        Path directory = makeDirectoryPath(repository, userName);
+        cloneRepository(repository, directory, userName);
+        for (String branch : toBranches) {
+            gitCheckout(directory, branch);
+            if (!gitStatus(directory, branch)) {
+                throw new Exception("Git checkout error");
+            }
+            for (Commit commit : commits) {
+                try {
+                    BufferedReader reader = runCommand(directory, "git", "cherry-pick", commit.getCommitSHA());
+                    printReader(reader);
+                    System.out.printf("Commit %s cherry-picked from %s to branch %s%n", commit.getCommitSHA(), fromBranch, branch);
+                } catch (IOException e) {
+                    throw new Exception(String.format("Cherry-pick %s commit error to branch %s%n", commit.getCommitSHA(), branch));
+                }
+            }
+            try {
+                gitPush(directory, branch);
+                System.out.println("Successful push to branch " + branch);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
-    public void merge(String repository, String fromBranch, String[] toBranches) throws Exception{
-        Path directory = Path.of("C:\\cherry-pick-bot\\Galaxy13\\" + repository);
-        cloneRepository(repository);
+    private Path makeDirectoryPath(String repository, String userName) {
+        return Path.of(String.format("C:\\cherry-pick-bot\\%s\\%s", userName, repository));
+    }
+
+    public void merge(String repository, String fromBranch, String[] toBranches, String userName) throws Exception {
+        Path directory = makeDirectoryPath(repository, userName);
+        cloneRepository(repository, directory, userName);
         for (String branch : toBranches) {
             gitCheckout(directory, branch);
             if (!gitStatus(directory, branch)) {
