@@ -3,11 +3,38 @@
 #  -H "Authorization: Bearer "
 #  -H "X-GitHub-Api-Version: 2022-11-28"
 #  https://api.github.com/notifications
-GET https://api.github.com/repos/Overflow922/notification-bot/issues/comments/1962915997
+DELETE https://api.github.com/notifications/threads/9739992882
 Accept: application/vnd.github+json
-Authorization: Bearer
+Authorization: Bearer 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
 X-Github-Api-Version: 2022-11-28
-all: true
+
+###
+GET http://api.github.com/notifications
+Authorization: Bearer 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
+X-Github-Api-Version: 2022-11-28
+
+
+###
+
+###
+# curl -L
+#  -X PUT
+#  -H "Accept: application/vnd.github+json"
+#  -H "Authorization: Bearer <YOUR-TOKEN>"
+#  -H "X-GitHub-Api-Version: 2022-11-28"
+#  https://api.github.com/notifications
+#  -d '{"last_read_at":"2022-06-10T00:00:00Z","read":true}'
+PUT https://api.github.com/notifications
+Accept: application/vnd.github+json
+Authorization: Bearer <YOUR-TOKEN>
+X-GitHub-Api-Version: 2022-11-28
+Content-Type: application/x-www-form-urlencoded
+
+{"last_read_at":"2022-06-10T00:00:00Z","read":true}
+
+###
+
+
 
 # curl -L
 #  -H "Accept: application/vnd.github+json"
