@@ -5,12 +5,12 @@
 #  https://api.github.com/notifications
 DELETE https://api.github.com/notifications/threads/9739992882
 Accept: application/vnd.github+json
-Authorization: Bearer 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
+Authorization: Bearer
 X-Github-Api-Version: 2022-11-28
 
 ###
 GET http://api.github.com/notifications
-Authorization: Bearer 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
+Authorization: Bearer
 X-Github-Api-Version: 2022-11-28
 
 
