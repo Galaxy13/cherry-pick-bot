@@ -3,13 +3,13 @@ github:
     base_url_api: 'https://api.github.com'
     headers:
         Accept: 'application/vnd.github+json'
-        Authorization: 'Bearer '
+        Authorization: 'Bearer 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'
         X-Github-Api-Version: '2022-11-28'
     notification:
         notification_url: 'notification'
         json_request: 'url'
         json_comment: 'latest_comment_url'
     bot:
-        username: 'Retroider'
-        token: ''
+      username: 'Galaxy13'
+      token: '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'
 

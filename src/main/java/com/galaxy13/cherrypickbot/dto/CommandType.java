@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public enum CommandType {
     CHERRYPICK("cherry-pick"),
-    MERGE("merge");
+    MERGE("merge"),
+    DEFAULT("no command");
 
     private final String command;
 }

@@ -25,7 +25,9 @@ public class Comment {
         } else if (!Pattern.compile("merge").matcher(text).find()) {
             commandType = CommandType.MERGE;
         } else {
-            throw new JsonParseException("No command found in comment");
+            System.out.println("Log: No command found in comment");
+            commandType = CommandType.DEFAULT;
+            return;
         }
         Matcher branchesPatternMatcher = Pattern.compile(("(?<=" + commandType.getCommand() + " to )[a-z0-9A-Z].+")).matcher(text);
         if (branchesPatternMatcher.find()){

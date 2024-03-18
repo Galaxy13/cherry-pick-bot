@@ -38,6 +38,7 @@ public class GitWorker {
     }
 
     private void cloneRepository(String repository, Path directory, String userName) throws Exception {
+        Logger.logWrite("Cloning repository...");
         if (!Files.exists(directory)) {
             Files.createDirectories(directory);
         }
@@ -47,8 +48,9 @@ public class GitWorker {
                     String.format("https://oauth2:%s@%s/%s/%s", token, originUrl, userName, repository), ".");
             printReader(reader);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            Logger.logErr(e);
         }
+        Logger.logWrite("Cloning done");
     }
 
     private boolean gitStatus(Path directory, String branch) {
@@ -58,15 +60,19 @@ public class GitWorker {
             String firstLine = reader.readLine();
             return Pattern.compile(String.format("On branch %s", branch)).matcher(firstLine).find();
         } catch (IOException e) {
+            Logger.logErr(e);
             return false;
         }
     }
 
     private void gitCheckout(Path directory, String branch) throws IOException {
+        Logger.logWrite("Perform checkout to branch " + branch);
         BufferedReader reader = runCommand(directory, "git", "checkout", branch);
         System.out.println(reader.readLine());
         if (!gitStatus(directory, branch)) {
-            throw new IOException(String.format("Checkout to branch %s error", branch));
+            IOException exp = new IOException(String.format("Checkout to branch %s error", branch));
+            Logger.logErr(exp);
+            throw exp;
         }
     }
 
@@ -86,40 +92,48 @@ public class GitWorker {
     }
 
     private void gitPush(Path directory, String remoteBranch) throws IOException {
+        Logger.logWrite("Perfrom push to origin " + remoteBranch);
         gitCheckout(directory, remoteBranch);
         if (!gitStatus(directory, remoteBranch)) {
-            throw new IOException("Status check error");
+            IOException ioException = new IOException("Status check error");
+            Logger.logErr(ioException);
+            throw ioException;
         }
         try {
             BufferedReader reader = runCommand(directory, "git", "push");
             printReader(reader);
         } catch (IOException e) {
+            Logger.logErr(e);
             throw new IOException("Push branch to origin error");
         }
     }
 
     public void cherryPickCommits(Commit[] commits, String fromBranch, String[] toBranches, String userName, String repository) throws Exception {
+        Logger.logWrite("Cherry pick " + commits.toString() + " from " + fromBranch + " to " + toBranches + " started...");
         Path directory = makeDirectoryPath(repository, userName);
         cloneRepository(repository, directory, userName);
         for (String branch : toBranches) {
             gitCheckout(directory, branch);
             if (!gitStatus(directory, branch)) {
-                throw new Exception("Git checkout error");
+                Exception exception = new Exception("Git checkout error");
+                Logger.logErr(exception);
+                throw exception;
             }
             for (Commit commit : commits) {
                 try {
                     BufferedReader reader = runCommand(directory, "git", "cherry-pick", commit.getCommitSHA());
                     printReader(reader);
-                    System.out.printf("Commit %s cherry-picked from %s to branch %s%n", commit.getCommitSHA(), fromBranch, branch);
+                    Logger.logWrite(String.format("Commit %s cherry-picked from %s to branch %s%n", commit.getCommitSHA(), fromBranch, branch));
                 } catch (IOException e) {
+                    Logger.logErr(e);
                     throw new Exception(String.format("Cherry-pick %s commit error to branch %s%n", commit.getCommitSHA(), branch));
                 }
             }
             try {
                 gitPush(directory, branch);
-                System.out.println("Successful push to branch " + branch);
+                Logger.logWrite("Successful push to branch " + branch);
             } catch (IOException e) {
-                System.out.println(e.getMessage());
+                Logger.logErr(e);
             }
         }
     }
@@ -134,17 +148,21 @@ public class GitWorker {
         for (String branch : toBranches) {
             gitCheckout(directory, branch);
             if (!gitStatus(directory, branch)) {
-                throw new Exception("Git checkout error");
+                Exception exception = new Exception("Git checkout error");
+                Logger.logErr(exception);
+                throw exception;
             }
             try {
                 BufferedReader bufferedReader = runCommand(directory, "git", "merge", fromBranch);
                 printReader(bufferedReader);
                 System.out.printf("Branch %s merged with %s%n", fromBranch, branch);
             } catch (IOException e) {
+                Logger.logErr(e);
                 throw new Exception(String.format("Merge from %s to %s error", fromBranch, branch));
             }
 //            gitCommit(directory, branch);
             gitPush(directory, branch);
+            Logger.logWrite("Merge completed");
         }
     }
 }
