@@ -139,7 +139,7 @@ public class GitWorker {
     }
 
     private Path makeDirectoryPath(String repository, String userName) {
-        return Path.of(String.format("C:\\cherry-pick-bot\\%s\\%s", userName, repository));
+        return Path.of(String.format("cherry-pick-bot\\%s\\%s", userName, repository));
     }
 
     public void merge(String repository, String fromBranch, String[] toBranches, String userName) throws Exception {
