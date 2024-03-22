@@ -32,6 +32,7 @@ public class Logger {
             return true;
         } catch (Exception e) {
             System.out.println("Log write error");
+            System.out.println(e.getMessage());
             return false;
         }
     }
